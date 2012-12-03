@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Game</title>
+<style>html,body{margin:0;padding:0;}</style>
+</head>
+<body>
+<canvas id="myCanvas" width="800" height="600">Canvas no disponible</canvas>
+<audio id="bgSound" src="/sounds/bg.wav" autoplay loop></audio>
+<a href="/">Ir Atras</a>
+<script>
+
+// ctx.drawImage(image, sx, sy, sWide, sHi, dx, dy, dWide, dHigh)
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+document.getElementById("bgSound").volume = 0.5;
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+var sprite = new Image();
+sprite.src = "images/spritesheetf.png";
+
+var STATE = {
+    LEVELS: 1,
+    GAME: 2,
+    INVASION: 4,
+    RESULT: 3,
+    RESET: 0
+};
+
+var LEVEL = {
+    NOT_SET: 0,
+    EASY: 1,
+    MID: 2,
+    HARD: 3
+};
+
+var TERRITORIES = [
+    {
+        name: "La Antartida",
+        x: 347,
+        y: 39,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuántos países reclaman como propio parte del territorio antártico?",
+        				opciones: ["7", "10", "15"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Si la Antártida fuera un país, qué puesto ocuparía en cuanto a superficie?",
+        				opciones: ["1", "2", "3"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Qué miembro permanente del Consejo de Seguridad no tiene una base en la Antártida?",
+        				opciones: ["China", "Francia", "Todos tienen al menos una"],
+        				correcta: 2
+        			}
+        		],
+        flag: Flag
+    },
+    /*{
+        name: "Groenlandia",
+        x: 270,
+        y: 133,
+        
+    },*/
+    {
+        name: "Los E.E.U.U",
+        x: 142,
+        y: 155,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuántos años de democracia ininterrumpida cumple Estados Unidos en 2013?",
+        				opciones: ["199", "214", "254"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Quién fue el único presidente estadounidense en servir dos mandatos no consecutivos?",
+        				opciones: ["Woodrow Wilson", "Grover Cleveland", "George Washington"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuántos territorios tiene Estados Unidos considerados coloniales por el Comité de Descolonización?",
+        				opciones: ["1", "3", "5"],
+        				correcta: 1
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "Mexico",
+        x: 142,
+        y: 234,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuál es el nombre completo de México?",
+        				opciones: ["República Mexicana", "República Federal de México", "Estados Unidos Mexicanos"],
+        				correcta: 2
+        			},
+        			{
+        				pregunta: "Cuántos presidentes tuvo México desde 1934? (incluye a Peóa Nieto)",
+        				opciones: ["10", "12", "14"],
+        				correcta: 2
+        			},
+        			{
+        				pregunta: "Quién fue el primer presidente de México?",
+        				opciones: ["Guadalupe Victoria", "Vicente Guerrero", "Manuel Gómez Pedraza"],
+        				correcta: 0
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "América Central",
+        x: 275,
+        y: 326,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuál de los siguientes no está en la misma isla que los otros dos?",
+        				opciones: ["República Dominicana", "Dominica", "Haití"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuál de los siguientes países es una isla?",
+        				opciones: ["Costa Rica", "Santa Lucía", "Nicaragua"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuál de los siguientes no es un Commonwealth Realm (es decir, cuál no reconoce a la reina de Inglaterra como su jefa de Estado)?",
+        				opciones: ["Antigua y Barbuda", "Bahamas", "Trinidad y Tobago"],
+        				correcta: 2
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "América del Sur",
+        x: 216,
+        y: 414,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuál fue el último país de Sudamérica en declarar la independencia de España?",
+        				opciones: ["Bolivia", "Paraguay", "Per˙"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Cuál es el país con menor PBI de Sudamérica según el FMI?",
+        				opciones: ["Guyana", "Paraguay", "Surinam"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Detrás de Brasil, quién tiene el mayor PBI de Sudamérica según el FMI?",
+        				opciones: ["Argentina", "Chile", "Colombia"],
+        				correcta: 0
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "Europa",
+        x: 436,
+        y: 195,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuántos Estados reconocidos existen en Europa (Occidental y Oriental)?",
+        				opciones: ["38", "42", "46"],
+        				correcta: 2
+        			},
+        			{
+        				pregunta: "Cuál de estos países no pertenece al Grupo de Europa Oriental?",
+        				opciones: ["Austria", "Polonia", "República Checa"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Cuál de los siguientes países no pertenece al Grupo Europa Occidental y Otros?",
+        				opciones: ["Australia", "Chipre", "Turquīa"],
+        				correcta: 1
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "Rusia",
+        x: 571,
+        y: 158,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Qué puesto ocupa Rusia en cuanto a población en el mundo",
+        				opciones: ["6", "9", "15"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuántos Estados actuales conformaban la Unión Soviética?",
+        				opciones: ["10", "15", "19"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuántas unidades político-administrativas tiene Rusia?",
+        				opciones: ["74", "83", "105"],
+        				correcta: 1
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "Medio Oriente",
+        x: 543,
+        y: 239,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuál de los siguientes países no es miembro de la Liga Árabe?",
+        				opciones: ["Arabia Saudita", "Irán", "Kuwait"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuál de estos no es un miembro fundador de la Liga Árabe?",
+        				opciones: ["Jordania", "Líbano", "Marruecos"],
+        				correcta: 2
+        			},
+        			{
+        				pregunta: "De qué rama del Islam hay mayoría en Medio Oriente?",
+        				opciones: ["Chiíta", "Sunnita", "Ambas por igual"],
+        				correcta: 1
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "China",
+        x: 622,
+        y: 276,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Con quién compite China por ser el tercer país más grande del mundo?",
+        				opciones: ["Canadá", "Brasil", "Estados Unidos"],
+        				correcta: 2
+        			},
+        			{
+        				pregunta: "Cuál es el nombre completo de China?",
+        				opciones: ["República de China", "República Popular China", "República Popular y Democrática de China"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cómo se llama el partido comunista de China?",
+        				opciones: ["Partido Comunista Chino", "Partido Obrero Chino", "Partido del Pueblo Chino"],
+        				correcta: 0
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "El Norte de África",
+        x: 416,
+        y: 300,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuál de los siguientes países del norte de África no pertenecen al denominado Magreb?",
+        				opciones: ["Argelia", "Libia", "Egipto"],
+        				correcta: 2
+        			},
+        			{
+        				pregunta: "Cuál es el ˙nico país de África que no pertenece a la Unión Africana?",
+        				opciones: ["Egipto", "Marruecos", "Nigeria"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cómo se llama el golfo al oeste de África?",
+        				opciones: ["Golfo de Adén", "Golfo de Guinea", "Golfo Pérsico"],
+        				correcta: 1
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "El Sur de África",
+        x: 447,
+        y: 392,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Después de Nigeria, cuál es el país más poblado de África? (14∫ país más poblado)",
+        				opciones: ["Egipto", "Etiopía", "RD Congo"],
+        				correcta: 1
+        			},
+        			{
+        				pregunta: "Cuál es el país más al sur (después de Sudáfrica) de África?",
+        				opciones: ["Lesotho", "Namibia", "Suazilandia"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Cómo se llama la isla más grande de África?",
+        				opciones: ["Madagascar", "Mauricio", "Réunion"],
+        				correcta: 0
+        			}
+        		],
+        flag: Flag
+    },
+    {
+        name: "Oceania",
+        x: 727,
+        y: 434,
+        preguntas: [
+        			{
+        				player: 0,
+        				CPU: 0
+        			},
+        			{
+        				pregunta: "Cuántos Estados miembro de la ONU se encuentran en Oceanía?",
+        				opciones: ["14", "20", "25"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Cuál de estos países de Oceanía está gobernado por una junta militar?",
+        				opciones: ["Fiyi", "Tonga", "Tuvalu"],
+        				correcta: 0
+        			},
+        			{
+        				pregunta: "Cuál de estos tres países se independizó del Reino Unido en 1983?",
+        				opciones: ["Nauru", "Tuvalu", "Vanuatu"],
+        				correcta: 2
+        			}
+        		],
+        flag: Flag
+    }
+];
+
+var bombSound = new Audio('/sounds/bomb.wav');
+var hahaSound = new Audio('/sounds/haha.wav');
+var clapSound = new Audio('/sounds/clap.wav');
+
+var status = STATE.LEVELS;
+var level = LEVEL.NOT_SET;
+
+var current_country = 0;
+var current_question = 1;
+var answer = 0;
+var correct_answers = 0;
+
+var plaque = new Button(804,   0, 455, 355, 172.5, 122.5);
+
+var easy   = new Button(975, 487, 261,  46, 269.5, 202.5);
+var mid    = new Button(975, 594, 261,  46, 269.5, 268.5);
+var hard   = new Button(975, 368, 261,  46, 269.5, 334.5);
+
+var optionA   = new Button(975, 772, 135, 165, 188.75, 300);
+var optionB   = new Button(975, 772, 135, 165,    335, 300);
+var optionC   = new Button(975, 772, 135, 165, 481.25, 300);
+
+var playAgain = new Button(  0, 931, 261,  46,  269.5, 360);
+
+var mouseX = 0, mouseY = 0;
+var opacity = 0;
+
+var FLAGS = [];
+
+for (i = 0; i < Object.size(TERRITORIES); i++) {
+	FLAGS.push(	{ x: -26, y: 0 });
+}
+
+init();
+
+
+// Objects
+
+function Button(sx, sy, sw, sh, dx, dy) {
+	this.w = sw;
+	this.h = sh;
+    this.dx = dx;
+    this.dy = dy;
+    this.sx = sx;
+    this.sy = sy;
+    this.psx = sx;
+    this.psy = sy;
+}
+
+function Flag(color) {
+	this.color = color;
+	this.sy = 79;
+	this.w = 25;
+	this.h = 37;
+	this.dx = -26;
+	this.dy = 0;
+	if (color == "red")
+		this.sx = 722;
+	else
+		this.sx = 696;
+}
+
+Flag.prototype = new Button;
+
+// Prototypes
+
+Button.prototype.checkClicked = function () {
+    if (mouseX >= this.dx &&
+    	mouseX <= this.w + this.dx &&
+    	mouseY >= this.dy &&
+    	mouseY <= this.dy + this.h) return true;
+    return false;
+};
+
+Button.prototype.pressed = function (sx, sy) {
+	this.psx = this.sx;
+	this.psy = this.sy;
+	this.sx = sx;
+	this.sy = sy;
+};
+
+Button.prototype.unpress = function () {
+	this.sx = this.psx;
+	this.sy = this.psy;
+}
+
+// Mouse Clicked Event
+function mouseClicked (e) {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+    
+    if (status == STATE.LEVELS) {
+		pLevel = level;
+        if (easy.checkClicked()) {
+            level = LEVEL.EASY;
+            easy.pressed(easy.sx, 542);
+        } else if (mid.checkClicked()) {
+            level = LEVEL.MID;
+            mid.pressed(mid.sx, 645);
+        } else if (hard.checkClicked()) {
+            level = LEVEL.HARD;
+            hard.pressed(hard.sx, 431);
+        }
+        if (level != pLevel) setTimeout(fadeOut, 250);
+	} else if (status == STATE.GAME) {
+		var clicked = false;
+		if (optionA.checkClicked()) {
+            answer = 0;
+            clicked = true;
+            optionA.pressed(1130, 772);
+        } else if (optionB.checkClicked()) {
+            answer = 1;
+            clicked = true;
+            optionB.pressed(1130, 772);
+        } else if (optionC.checkClicked()) {
+        	answer = 2;
+        	clicked = true;
+            optionC.pressed(1130, 772);
+        }
+        if (clicked)
+        	setTimeout(validateAnswer, 250);
+        
+	} else if (status == STATE.RESULT) {
+		if (playAgain.checkClicked()) {
+			playAgain.pressed(0, 985);
+			setTimeout(resetGame, 250);
+			easy.unpress();
+			mid.unpress();
+			hard.unpress();
+			resetGame();
+		}
+	} else if (status == STATE.RESET) {
+		
+	} else {
+		console.log("What's happening to the STATE!!??");
+	}
+}
+
+// Functions
+
+function fadeOut() {
+    opacity = 0;
+    status++;
+}
+
+function resetGame() {
+	status = STATE.RESET;
+	level = LEVEL.NOT_SET;
+	current_country = 0;
+	current_question = 1;
+	correct_answers = 0;
+	FLAGS = [];
+	for (i = 0; i < Object.size(TERRITORIES); i++) {
+		FLAGS.push(	{ x: -26, y: 0 });
+	}
+	fadeOut();
+}
+
+function validateAnswer() {
+	optionA.unpress();
+    optionB.unpress();
+    optionC.unpress();
+	if (TERRITORIES[current_country].preguntas[current_question].correcta == answer) {
+		// Draw tick
+		correct_answers++;
+		TERRITORIES[current_country].preguntas[0].player++;
+		clapSound.play();
+		clapSound.currentTime = 0;
+	} else {
+		// Draw wrong
+		TERRITORIES[current_country].preguntas[1].CPU++;
+		hahaSound.play();
+		hahaSound.currentTime = 0;
+	}
+	
+	if (current_question == 3) {
+		current_question = 1;
+		if (current_country+1 == Object.size(TERRITORIES)) {
+			// Show Result
+			fadeOut();
+		}
+		else {
+			if (TERRITORIES[current_country].preguntas[0].player > TERRITORIES[current_country].preguntas[0].CPU) {
+				TERRITORIES[current_country].flag = new Flag("red");
+			} else {
+				TERRITORIES[current_country].flag = new Flag("green");
+			}
+			status = STATE.INVASION;
+			bombSound.play();
+	    	bombSound.currentTime = 0;
+			current_country++;
+		}
+	} else {
+		current_question++;
+	}
+}
+
+// Draw
+
+function clear() {
+	ctx.clearRect(0,0,c.width,c.height);
+}
+
+function drawBG() {
+	ctx.drawImage(sprite, 0, 282, 800, 600, 0, 0, 800, 600);
+}
+
+function drawPlaque() {
+	// Draw plaque
+	ctx.drawImage(sprite, plaque.sx, plaque.sy, plaque.w, plaque.h, plaque.dx, plaque.dy, plaque.w, plaque.h);
+}
+
+function drawString(ctx, text, posX, posY, maxW, textColor, rotation, font, fontSize) {
+	var lines = text.split("\n");
+	maxW -= 40;
+	posX += 20;
+	if (!rotation) rotation = 0;
+	if (!font) font = "'serif'";
+	if (!fontSize) fontSize = 16;
+	if (!textColor) textColor = '#000000';
+	ctx.save();
+	ctx.font = fontSize + "px " + font;
+	ctx.fillStyle = textColor;
+	ctx.translate(posX, posY);
+	ctx.rotate(rotation * Math.PI / 180);
+	for (i = 0; i < lines.length; i++) {
+	
+		var metrics = ctx.measureText(lines[i]);
+		var parts = [];
+		if (metrics.width > maxW) {
+			var diff = parseInt((metrics.width - maxW) / fontSize);
+			var fit = parseInt(maxW / (fontSize / 2));
+			var part = Math.ceil(diff / maxW);
+			for (j = 0; j <= part; j++) {
+				var nText = lines[i].substr(j*fit, fit);
+				var nMetric = ctx.measureText(nText);
+				ctx.fillText(nText, (maxW / 2) - (nMetric.width / 2), j*fontSize+i*fontSize);
+			}
+		}
+		else {
+ 			ctx.fillText(lines[i], (maxW / 2) - (metrics.width / 2), i*fontSize);
+ 		}
+	}
+	ctx.restore();
+}
+
+function drawLevels() {
+    drawPlaque();
+    // Draw difficult, mid, and easy buttons
+    ctx.drawImage(sprite, easy.sx, easy.sy, easy.w, easy.h, easy.dx, easy.dy, easy.w, easy.h);
+    ctx.drawImage(sprite, mid.sx, mid.sy, mid.w, mid.h, mid.dx, mid.dy, mid.w, mid.h);
+    ctx.drawImage(sprite, hard.sx, hard.sy, hard.w, hard.h, hard.dx, hard.dy, hard.w, hard.h);
+}
+
+function drawABCButtons() {
+	ctx.drawImage(sprite, optionA.sx, optionA.sy, optionA.w, optionA.h, optionA.dx, optionA.dy, optionA.w, optionA.h);
+	ctx.drawImage(sprite, optionB.sx, optionB.sy, optionB.w, optionB.h, optionB.dx, optionB.dy, optionB.w, optionB.h);
+	ctx.drawImage(sprite, optionC.sx, optionC.sy, optionC.w, optionC.h, optionC.dx, optionC.dy, optionC.w, optionC.h);
+}
+
+function drawABCOptions() {
+	drawString(ctx, "A", optionA.dx, optionA.dy + 150, optionA.w, null, 0, "Verdana", 26);
+	drawString(ctx, "B", optionB.dx, optionA.dy + 150, optionA.w, null, 0, "Verdana", 26);
+	drawString(ctx, "C", optionC.dx, optionA.dy + 150, optionA.w, null, 0, "Verdana", 26);
+}
+
+function drawOptions() {
+	drawString(ctx, TERRITORIES[current_country].preguntas[current_question].opciones[0], optionA.dx, optionA.dy + 30, optionA.w, null, 0, "Verdana", 26);
+	drawString(ctx, TERRITORIES[current_country].preguntas[current_question].opciones[1], optionB.dx, optionA.dy + 30, optionA.w, null, 0, "Verdana", 26);
+	drawString(ctx, TERRITORIES[current_country].preguntas[current_question].opciones[2], optionC.dx, optionA.dy + 30, optionA.w, null, 0, "Verdana", 26);
+}
+
+function drawGame() {
+	for (i = 0; i <= current_country; i++) {
+	    var hard = TERRITORIES[i].flag;
+	    ctx.drawImage(sprite, hard.sx, hard.sy, hard.w, hard.h, FLAGS[i].x, FLAGS[i].y, hard.w, hard.h);
+    }
+	drawPlaque();
+	drawString(ctx, "Por " + TERRITORIES[current_country].name + ":\n", plaque.dx, plaque.dy + 40, plaque.w, null, 0, "Verdana", 26);
+	drawString(ctx, TERRITORIES[current_country].preguntas[current_question].pregunta, plaque.dx, plaque.dy + 100, plaque.w, null, 0, "Verdana", 20);
+	drawABCButtons();
+	drawOptions();
+	drawABCOptions();
+}
+
+var movedFlag = [];
+movedFlag.length = Object.size(TERRITORIES);
+
+function drawInvasion() {
+	for (i = 0; i <= current_country; i++) {
+	    var hard = TERRITORIES[i].flag;
+	    ctx.drawImage(sprite, hard.sx, hard.sy, hard.w, hard.h, FLAGS[i].x, FLAGS[i].y, hard.w, hard.h);
+	    var b1 = false, b2 = false;
+	    if (FLAGS[current_country-1].x < TERRITORIES[current_country-1].x)
+	    	FLAGS[current_country-1].x += 8;
+	    else
+	    	b1 = true;
+	    if (FLAGS[current_country-1].y < TERRITORIES[current_country-1].y)
+	    	FLAGS[current_country-1].y += 8;
+	    else
+	    	b2 = true;
+	    if (b1 && b2) {
+	    	movedFlag[i] = true;
+	    	
+	    }
+    }
+    var count = 0;
+    for (i = 0; i < movedFlag.length; i++) if (movedFlag[i]) count++;
+    if (count == current_country+1) setTimeout(doGame, 250);
+}
+
+function doGame() {
+	status = STATE.GAME;
+}
+
+function drawResult() {
+    drawPlaque();
+    drawString(ctx, "Tu puntaje es:", plaque.dx, plaque.dy + 75, plaque.w, null, 0, "Verdana", 20);
+    drawString(ctx, correct_answers+" / 30", plaque.dx, plaque.dy + 200, plaque.w, null, 0, "Verdana", 80);
+    ctx.drawImage(sprite, playAgain.sx, playAgain.sy, playAgain.w, playAgain.h, playAgain.dx, playAgain.dy, playAgain.w, playAgain.h);
+}
+
+function drawAgain() {
+    
+}
+
+function loop() {
+	clear();
+	drawBG();
+	
+	if (opacity < 1) {
+		opacity += 0.05;
+		ctx.globalAlpha = opacity;
+	}
+	
+	if (status == STATE.LEVELS) {
+		drawLevels();
+	} else if (status == STATE.GAME) {
+		drawGame();
+	} else if (status == STATE.INVASION) {
+		drawInvasion();
+	} else if (status == STATE.RESULT) {
+		drawResult();
+	} else if (status == STATE.RESET) {
+		drawAgain();
+	} else {
+		console.log("What is happening to the STATE!!??");
+	}
+}
+
+function init() {
+    document.addEventListener('click', mouseClicked, false);
+	setInterval(loop, 60);
+}
+
+</script>
+</body>
+</html>

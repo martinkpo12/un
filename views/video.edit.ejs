@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# iortmun: http://ogp.me/ns/fb/iortmun#">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+
+    <title><%= app.name %></title>
+    
+<!-- 	<link href="/stylesheets/bootstrap-2.1.1/docs.css" rel="stylesheet" type="text/css" media="all" /> -->
+	
+	<link href="/stylesheets/bootstrap-2.1.1/bootstrap.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/bootstrap-responsive.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/jasny-bootstrap.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/docs.css" rel="stylesheet"/>
+	<link href="/stylesheets/main.css" rel="stylesheet"/>
+    
+    <!--[if IE]>
+      <script type="text/javascript">
+        var tags = ['header', 'section'];
+        while(tags.length)
+          document.createElement(tags.pop());
+      </script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+    <div id="fb-root"></div>
+    <script type="text/javascript">
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '<%= app.id %>', // App ID
+          channelUrl : '<%= url_no_scheme('/channel.html') %>', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true // parse XFBML
+        });
+
+        // Listen to the auth.login which will be called when the user logs in
+        // using the Login button
+        FB.Event.subscribe('auth.login', function(response) {
+          // We want to reload the page now so PHP can read the cookie that the
+          // Javascript SDK sat. But we don't want to use
+          // window.location.reload() because if this is in a canvas there was a
+          // post made to this page and a reload will trigger a message to the
+          // user asking if they want to send data again.
+          // window.location = window.location;
+          window.location.reload(true);
+        });
+
+        FB.Canvas.setAutoGrow();
+      };
+
+      // Load the SDK Asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    
+    <!-- =======================================================================================================  -->
+    
+    	
+    
+    	<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="/"><img src="/images/logo4.png" alt="ENAMUN" id="logo"/></a>
+					<div class="nav-collapse">
+						<ul class="nav pull-right">
+							<li><a>
+							<% if (user) { %>
+								Hola <%= user.name %>!
+								</a></li><li><a><div class="fb-logout-button"></div></a>
+							<% } else { %>
+								<div class="fb-login-button" data-scope="email, publish_actions"></div>
+							<% } %></a></li>
+							<li><a href="/paises">Paises</a></li>
+							<li><a href="/noticias">Noticias</a></li>
+							<li><a href="/fotos">Fotos</a></li>
+							<li class="active"><a href="/videos">Videos</a></li>
+							<% if (user) { %>
+								<li><a href="#logout" id="logout">Logout</a></li>
+							<% } %>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div>
+		
+<!-- 		<div class="slide-container"></div> -->
+		
+		<header class="jumbotron masthead pais">
+			<div class="container">
+				<h1><%= video.titulo %></h1>
+				<p class="lead">Agregue un video a nuestra base de datos.</p>
+			</div>
+		</header>
+		
+		<div class="container" >
+			
+			<div class="row">
+				<div class="span2"></div>
+				<div class="span8">
+					<% ref = req.url.split('/');%>
+					
+					<ul class="breadcrumb">
+						<li><a href="/">Inicio</a> <span class="divider">/</span></li>
+						<li>
+							<a href="/<%= ref[1]%>"><%= ref[1].charAt(0).toUpperCase()+ref[1].substr(1)%></a>
+							<span class="divider">/</span>
+						</li>
+						<li>
+							<a href="/<%= ref[1]+'/'+ref[2]%>"><%= video.titulo%></a>
+							<span class="divider">/</span>
+						</li>
+						<li class="active">Edición</li>
+					</ul>
+					<form class="form-horizontal" id="addCountry">
+						<fieldset>
+							<div id="legend" class="">
+								<legend class=""><%= video.titulo %></legend>
+							</div>
+							
+							<div class="control-group">
+								<!-- Text input-->
+								<label class="control-label" for="input01">Nombre</label>
+								<div class="controls">
+									<input type="text" placeholder="ej: pepe" class="input-xxlarge" id="input01" name="titulo" value="<%= video.titulo %>">
+									<p class="help-block">Ingrese el nombre del video</p>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="input02">Bandera</label>
+								<div class="controls">
+									<ul id="myTab" class="nav nav-tabs">
+										<li class="active"><a href="#home" data-toggle="tab">Desde URL</a></li>
+										<li class=""><a href="#profile" data-toggle="tab">Desde Archivo</a></li>
+									</ul>
+									<div id="myTabContent" class="tab-content">
+										<div class="tab-pane fade active in" id="home">
+											<div class="input-prepend">
+												<span class="add-on">http://</span>
+												<%	if (!video.url)
+														value = '';
+													else if (video.url.substr(0,1) == '/')
+														value = '';
+													else
+														value = video.url;
+												%>
+												<input value="<%= value%>" class="span5" placeholder="URL de la Bandera" id="input02" type="text" name="flag_url">
+												<span style="font-size: 14px;" class="help-inline">URL para el video</span>
+											</div>
+										</div>
+										<div class="tab-pane fade" id="profile">
+											
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<input type="hidden">
+												<div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+													<img src="<%= (!value) ? 'http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image' : video.url %>">
+												</div>
+												<div class="fileupload-preview fileupload-exists thumbnail"></div>
+												<div>
+													<span class="btn btn-file">
+														<span class="fileupload-new">Select image</span>
+														<span class="fileupload-exists">Change</span>
+														<input type="file" id="fileInput">
+													</span>
+													<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+												</div>
+											</div>
+											
+											<!--<input type="file" name="video_url"/>-->
+										</div>
+									</div>
+								</div>
+							</div>
+								
+							<div class="control-group">
+								<!-- Textarea -->
+								<label class="control-label" for="input03">Descripcion</label>
+								<div class="controls">
+									<div class="textarea">
+										<textarea rows="20" type="" class="input-xxlarge" id="input03" name="description"><%= video.descripcion%></textarea>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-actions">
+								<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Guardar</button>
+								<button type="button" class="btn">Cancelar</button>
+							</div>
+						
+						</fieldset>
+					</form>
+				</div>
+				<div class="span2"></div>
+			</div>
+		</div>
+		
+		<footer>
+		
+			<div class="container">
+				
+				<h2>Hecho por Martin Goffan &copy 2012</h2>
+				
+			</div>
+		
+		</footer>
+		
+		<!-- Modal -->
+		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">Result</h3>
+			</div>
+			<div class="modal-body">
+				<p id="myModalResult">Loading...</p>
+				<div class="progress progress-striped active">
+					<div class="bar" style="width: 0%;" id="reqProgress"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			</div>
+		</div>
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>  <!-- jquery -->
+	<script type="text/javascript" src="/scripts/bootstrap-2.1.1/bootstrap.min.js"></script> <!-- boostrstrap -->
+	<script type="text/javascript" src="/scripts/bootstrap-2.1.1/bootstrap-fileupload.js"></script> <!-- fileupload -->
+    <script type="text/javascript" src="/scripts/facebook.js"></script> 
+	
+	<script type="text/javascript">
+		$(function () {
+			/*	 	Carousel Sample		 */
+/* 			$('#myCarousel').carousel({ interval: 1700, pause: 'hover' }); */
+/* 			$('#myCarousel2').carousel({ interval: 2700}); */
+
+			/*  File upload	 */
+			$('.fileupload').fileupload({ name: 'video_url' });
+			
+			/* 		Tabs toggle	 */
+			$('a[data-toggle="tab"]').on('shown', function (e) {
+				$('#'+$(e.target).attr('href').substr(1)+' input').prop('disabled',false);
+				$('#'+$(e.relatedTarget).attr('href').substr(1)+' input').prop('disabled',true);
+			});
+			
+			function progressHandlingFunction(e) {
+				if(e.lengthComputable){
+			        $('#reqProgress').css('width',(e.loaded / e.total)*100+'%');
+			        if ((e.loaded / e.total)*100 == 100) {
+				        $('#reqProgress').parent().addClass('progress-success');
+			        }
+			    }
+			}
+			
+			function beforeSendHandler (e) {
+				
+			}
+			
+			function errorHandler (e) {
+				
+			}
+			
+			function completeHandler (e) {
+				$('#myModalResult').html(e.replace('/api', ''));
+			}
+			
+			/* 		Submission Result	 */
+			$('#myModal').on('show', function (e) {
+				var formData = new FormData($('#addCountry')[0]);
+				$.ajax({
+					url: '/api/video/<%= video.id%>',  //server script to process data
+					type: 'PUT',
+					xhr: function() {  // custom xhr
+						myXhr = $.ajaxSettings.xhr();
+						if(myXhr.upload){ // check if upload property exists
+							myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
+						}
+						return myXhr;
+					},
+					//Ajax events
+					beforeSend: beforeSendHandler,
+					success: completeHandler,
+					error: errorHandler,
+					// Form data
+					data: formData,
+					//Options to tell JQuery not to process data or worry about content-type
+			        cache: false,
+			        contentType: false,
+			        processData: false
+			    });
+			});
+		});
+	</script>
+	
+  </body>
+</html>
+

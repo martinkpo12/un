@@ -1,0 +1,61 @@
+/* 
+    Document   : publiya
+    Created on : 31-ene-2012, 17:54:36
+    Author     : carlosandresavila
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+/*  Adicionales avila */
+#logo{position:absolute; top:0px;}
+#home {padding-top:120px;}
+#marketing {padding-top:60px;}
+#como-funciona {padding-top:60px;}
+#razones {padding-top:60px;}
+
+
+
+
+
+.input-xlarge {
+  padding: 10px;
+}
+
+
+.campo-planes{
+    float: left;
+    padding: 10px;
+    margin:20px;
+    
+      -moz-border-radius:10px;
+  -khtml-border-radius:10px;
+  -webkit-border-radius:10px;
+  border-radius:10px;
+        width: auto;
+       transition: all 0.5s ease-in;
+-webkit-transition: all 0.5s ease-in;
+
+}
+
+.campo-planes img {
+    float: left;
+    padding-right: 20px;
+    }
+    
+    
+    
+.campo-planes :hover {
+transform: rotate(8deg) translatex(10px);
+-ms-transform: rotate(8deg)translatex(10px); /* IE 9 */
+-webkit-transform: rotate(8deg) translatex(10px); /* Safari and Chrome */
+-o-transform: rotate(8deg)translatex(10px); /* Opera */
+-moz-transform: rotate(8deg)translatex(10px); /* Firefox */

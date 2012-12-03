@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# iortmun: http://ogp.me/ns/fb/iortmun#">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+
+    <title><%= app.name %></title>
+    
+    <!-- These are Open Graph tags.  They add meta data to your  
+         site that facebook uses when your content is shared     
+         over facebook.  You should fill these tags in with      
+         your data.  To learn more about Open Graph, visit       
+        'https://developers.facebook.com/docs/opengraph/'       -->
+<!--     <!--<meta property="og:title" content="<%= video.name %>" /> -->
+    <meta property="og:type" content="iortmun:video" />
+    <meta property="og:url" content="http://mgoffan.ortmun.jit.su/video/<%= video.id%>" />
+    <meta property="og:site_name" content="<%= app.name %>" />
+    <meta property="og:description" content="<%= video.description%>" />
+    <meta property="fb:app_id" content="<%= app.id %>" />
+    
+    <link href="/stylesheets/bootstrap-2.1.1/bootstrap.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/bootstrap-responsive.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/docs.css" rel="stylesheet"/>
+	<link href="/stylesheets/main.css" rel="stylesheet"/>
+    
+    <!--[if IE]>
+      <script type="text/javascript">
+        var tags = ['header', 'section'];
+        while(tags.length)
+          document.createElement(tags.pop());
+      </script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    
+  </head>
+  <body>
+    <div id="fb-root"></div>
+    <script type="text/javascript">
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '<%= app.id %>', // App ID
+          channelUrl : '<%= url_no_scheme('/channel.html') %>', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true // parse XFBML
+        });
+
+        // Listen to the auth.login which will be called when the user logs in
+        // using the Login button
+        FB.Event.subscribe('auth.login', function(response) {
+          // We want to reload the page now so PHP can read the cookie that the
+          // Javascript SDK sat. But we don't want to use
+          // window.location.reload() because if this is in a canvas there was a
+          // post made to this page and a reload will trigger a message to the
+          // user asking if they want to send data again.
+          // window.location = window.location;
+          window.location.reload(true);
+        });
+
+        FB.Canvas.setAutoGrow();
+      };
+
+      // Load the SDK Asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    
+    <!-- =======================================================================================================  -->
+    
+    
+    
+    	<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="/"><img src="/images/logo4.png" alt="ENAMUN" id="logo"/></a>
+					<div class="nav-collapse">
+						<ul class="nav pull-right">
+							<li><a>
+							<% if (user) { %>
+								Hola <%= user.name %>!
+								</a></li><li><a><div class="fb-logout-button"></div></a>
+							<% } else { %>
+								<div class="fb-login-button" data-scope="email, publish_actions"></div>
+							<% } %></a></li>
+							<li><a href="/paises">Paises</a></li>
+							<li><a href="/noticias">Noticias</a></li>
+							<li><a href="/fotos">Fotos</a></li>
+							<li class="active"><a href="/videos">Videos</a></li>
+							<li><a href="/modelos">Modelos</a></li>
+							<% if (user) { %>
+								<li><a href="#logout" id="logout">Logout</a></li>
+							<% } %>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div>
+		
+		<header class="jumbotron masthead videos">
+			<div class="container">
+				<h1><%= video.titulo %></h1>
+				<p class="lead">Un video con buena gente.</p>
+			</div>\
+		</header>
+		
+		<div class="container">
+			
+			<div class="row">
+				<div class="span8">
+					
+					<% ref = req.url.split('/');%>
+					
+					<ul class="breadcrumb">
+						<li><a href="/">Inicio</a> <span class="divider">/</span></li>
+						<li>
+							<a href="/<%= ref[1]%>"><%= ref[1].charAt(0).toUpperCase()+ref[1].substr(1)%></a>
+							<span class="divider">/</span>
+						</li>
+						<li class="active"><%= video.titulo%></li>
+					</ul>
+					
+					<h1 style="text-align:center"><%= video.titulo %></h1>
+					<video controls="controls" width="100%">
+						<source src="<%= video.url %>" type="video/mp4"/>
+					</video>
+					<p id='video-description'><%= video.descripcion %></p>
+					<% if (user) { %>
+						<strong>Like this video? <a class="fbFav">Favourite it!</a> or just <a class="fbLike">Like it!</a></strong>
+					<% } %>
+					
+					<div class="btn-group">
+						<a class="btn dropdown-toggle btn-info" data-toggle="dropdown" href="#">
+							<i class="icon-wrench"></i>Acciones
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="<%= video.id%>/edit">
+									<i class="icon-pencil"></i>
+									Editar
+								</a>
+							</li>
+							<li>
+								<a href="#myModal" role="buttun" data-toggle="modal">
+									<i class="icon icon-remove"></i>
+									Eliminar
+								</a>
+							</li>
+						</ul>
+					</div>
+					
+					<hr>
+					<section class="well">
+						<table style="width:100%">
+							<% video.comentarios.forEach( function (comentario) { %>
+								<tr>
+									<td>
+										<blockquote>
+											<% var t = comentario.fecha; %>
+											<strong class="pull-right"><%= t.getHours() + ":" +t.getMinutes() + " " + t.getDate() + "/" + t.getMonth() + "/" + t.getFullYear()  %></strong>
+											<p><%= comentario.contenido%></p>
+											<small><%= comentario.por%></small>
+											<hr style="border-width:3px;" />
+										</blockquote>
+									</td>
+								</tr>
+							<% })%>
+							
+							<tr>
+								<td>
+									<form id="comments">
+										<% if (user) { %>
+											<input type="hidden" name="por" value="<%= user.name%>">
+										<% }%>
+										<textarea name="contenido" style="width:80%;" rows="3"></textarea>
+										<button class="btn btn-info" id="send">Enviar</button>
+									</form>
+								</td>
+							</tr>
+						</table>
+					</section>
+
+					
+				</div>
+				
+				<div class="span3 hero-unit-2" style="margin-top:10px;padding-top:30px;padding-bottom:450px;">
+					
+					
+					
+					<!--<fb:activity style="margin-bottom:20px;" site="http://www.facebook.com/DjMartinGoffan" app_id="118280394918580" width="250" height="300"></fb:activity>
+					<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script><script>new TWTR.Widget({version: 2,type: 'profile',rpp: 4,interval: 30000,width: 250,height: 300,theme: {shell: {background: '#333333',color: '#ffffff'},tweets: {background: '#ffffff',color: '#ff0000',links: '#5065A7'}},features: {scrollbar: true,loop: false,live: true,behavior: 'all'}}).render().setUser('mgoffan').start();</script>
+					
+					<script>$(document).ready(function(){$('.twtr-tweet-text *').css('font-size', '14px');});</script>-->
+				
+				</div>
+			
+			</div> <!-- END ROW -->
+			
+		</div>
+		
+		<footer>
+		
+			<div class="container">
+				
+				<div class="row">
+					<div class="span3">
+						<h1>Paises</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Noticias</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Fotos</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Videos</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+				</div>
+				
+				<h2>Hecho por Martin Goffan &copy 2012</h2>
+				
+				<a class="fbView"></a>
+				
+			</div>
+		
+		</footer>
+		
+		<!-- Modal -->
+		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">Eliminar <%= video.name%></h3>
+			</div>
+			<div class="modal-body">
+				<p>Realmente desea eliminar <%= video.name%>?</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+				<button class="btn btn-primary" id="delete">Si</button>
+			</div>
+		</div>
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>  <!-- jquery -->
+	<script type="text/javascript" src="/scripts/bootstrap-2.1.1/bootstrap.min.js"></script> <!-- boostrstrap -->
+    <script type="text/javascript" src="/scripts/facebook.js"></script>
+	
+	<script type="text/javascript">
+		$(function () {
+/* 			$('#myCarousel').carousel({ interval: 1700, pause: 'hover' }) */
+			
+			var deleted = false;
+
+			$('#delete').click( function () {
+				$.ajax({
+					url:	'/api/video/<%= video.id%>',
+					type:	'DELETE',
+					success: function (data) {
+						$('.modal-body').html(data);
+						$('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
+						deleted = true;
+					}
+				});
+			});
+			
+			$('#myModal').on('hidden', function () {
+				if (deleted) {
+					window.location = '/videos';
+				}
+			});
+			
+			$("#send").click(function (e) {
+				e.preventDefault();
+				console.log("fsafs");
+				$.ajax({
+					url: '/api/video/<%= video.id%>/addComment',
+					type: 'POST',
+					data: $('#comments').serialize(),
+					success: function (data) {
+						var text = $("[name='contenido']").val();
+						$("[name='contenido']").val("");
+						$('tbody > tr, tbody > blockquote').eq($('tbody > tr, tbody > blockquote').length - 2).after("<blockquote><strong>Recien</strong><p>" + text + "</p><small>	<% if (user) { %><%= user.name %><% } else { %>Anonimo<% } %></small><hr style='border-width:3px;' /></blockquote>");
+					}
+				});
+			});
+		});
+	</script>
+    
+  </body>
+</html>
+

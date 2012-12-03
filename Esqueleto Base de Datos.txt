@@ -1,0 +1,56 @@
+PAIS
+-Nombre
+-Gobierno
+-Geografía
+-Religiones
+-Historia
+-Postura
+-
+
+DOCUMENTO
+-Subidor
+-Fecha de subida
+-Ultima mod
+-Autor (real)
+-IdTipo
+-Puntaje
+-Tema
+-IdDocumento
+
+USUARIO
+-Nombre
+-Apellido
+-Mail
+-Username
+-Contraseña
+-Tipo (Admin, User, Guest)
+
+EVENTO
+-Fecha y hora
+-Lugar
+-Organización
+-Tipo
+-Público (edad)
+-Contacto
+-Sitio
+
+COMENTARIO
+-IdDocumento
+-Fecha y hora
+-Autor
+
+FOTO
+-Fecha
+-Título
+-Lugar
+-URL
+
+VIDEO
+-URL
+-Título
+-Fecha
+-Descripción
+
+CATEGORIA
+-Tipo (Discurso real, Discurso de modelo, Resolución real, Resolución de Modelo, Tratado, Monografía)
+

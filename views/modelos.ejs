@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# iortmun: http://ogp.me/ns/fb/iortmun#">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+
+    <title><%= app.name %></title>
+    
+    <link href="/stylesheets/bootstrap-2.1.1/bootstrap.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/bootstrap-responsive.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/docs.css" rel="stylesheet"/>
+	<link href="/stylesheets/main.css" rel="stylesheet"/>
+    
+    <!--[if IE]>
+      <script type="text/javascript">
+        var tags = ['header', 'section'];
+        while(tags.length)
+          document.createElement(tags.pop());
+      </script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    
+  </head>
+  <body>
+    <div id="fb-root"></div>
+    <script type="text/javascript">
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '<%= app.id %>', // App ID
+          channelUrl : '<%= url_no_scheme('/channel.html') %>', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true // parse XFBML
+        });
+
+        // Listen to the auth.login which will be called when the user logs in
+        // using the Login button
+        FB.Event.subscribe('auth.login', function(response) {
+          // We want to reload the page now so PHP can read the cookie that the
+          // Javascript SDK sat. But we don't want to use
+          // window.location.reload() because if this is in a canvas there was a
+          // post made to this page and a reload will trigger a message to the
+          // user asking if they want to send data again.
+          // window.location = window.location;
+          window.location.reload(true);
+        });
+
+        FB.Canvas.setAutoGrow();
+      };
+
+      // Load the SDK Asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    
+    <!-- =======================================================================================================  -->
+    
+    
+    	<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="/"><img src="/images/logo4.png" alt="ENAMUN" id="logo"/></a>
+					<div class="nav-collapse">
+						<ul class="nav pull-right">
+							<li><a>
+							<% if (user) { %>
+								Hola <%= user.name %>!
+								</a></li><li><a><div class="fb-logout-button"></div></a>
+							<% } else { %>
+								<div class="fb-login-button" data-scope="email, publish_actions"></div>
+							<% } %></a></li>
+							<li><a href="/paises">Paises</a></li>
+							<li class="active"><a href="/noticias">Noticias</a></li>
+							<li><a href="/fotos">Fotos</a></li>
+							<li><a href="/videos">Videos</a></li>
+							<li><a href="/modelos">Modelos</a></li>
+							<% if (user) { %>
+								<li><a href="#logout" id="logout">Logout</a></li>
+							<% } %>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<header class="jumbotron masthead pais">
+			<div class="container">
+				<h1 style="font-size:60px;">Modelos</h1>
+				<p class="lead">Los modelos de este año</p>
+			</div>
+		</header>
+		
+		<div class="container">
+			
+			<div class="row">
+				<div class="span8">
+					
+					<% ref = req.url.split('/');%>
+					
+					<ul class="breadcrumb">
+						<li><a href="/">Inicio</a> <span class="divider">/</span></li>
+						<li class="active">Modelos</li>
+					</ul>
+					
+					<h1>Modelos</h1>
+					<hr>
+					<h3>MONUCBA VIII (Modelo de Naciones Unidas de la Ciudad de Buenos Aires)</h3>
+					<p><b>Organización:</b> ANU-AR (Asociación para las Naciones Unidas en la República Argentina)</p>
+					<p><b>Lugar:</b> Anexo del Senado de la Nación</p>
+					<p><b>Fecha:</b> 13 a 15 de junio</p>
+					<p><b>Ganadores:</b>
+						<ul>
+							<li>1∫Distinción General: Reino Unido
+							<li>2∫ Distinción General: Estados Unidos
+							<li>Mención en Consejo de Seguridad: Togo
+							<li>Mención en AG3: Togo
+							<li>Mención en AG4: Suiza
+							<li>Mención HonorÌfica: Embajador de Alemania
+						</ul>
+					</p>
+					<hr>
+					<h3>IBEROMUN VII (Modelo Iberoamericano de Naciones Unidas)</h3>
+					<p><b>Organización:</b> Asociación Civil MiNU</p>
+					<p><b>Lugar:</b> Centro de Altos Estudios en Ciencias Exactas (Universidad CAECE)</p>
+					<p><b>Fecha:</b> 26 y 28 de junio</p>
+					<p><b>Ganadores:</b>
+						<ul>
+							<li>Distinción General: Francia
+							<li>Menciones en Consejo de Seguridad: Estados Unidos, Reino Unido y Rusia
+							<li>Mención en ECOSOC: Cuba, Ecuador, Estados Unidos y Japón
+						</ul>
+					</p>
+					<hr>
+					<h3>DiTellaMUN III</h3>
+					<p><b>Organización:</b> Facultad de Derecho de la UTDT/Eidos</p>
+					<p><b>Lugar:</b> Universidad Torcuato Di Tella (UTDT)</p>
+					<p><b>Fecha:</b></p>
+					<hr>
+					<h3>MONUB XIV (Modelo de Naciones Unidas de la Universidad de Belgrano)</h3>
+					<p><b>Organización:</b> -</p>
+					<p><b>Lugar:</b> Universidad de Belgrano (UB)</p>
+					<p><b>Fecha:</b> 2 a 5 de octubre</p>
+					<p><b>Ganadores:</b>
+					<ul>
+						<li>Consejo de Seguridad 1∫ Lugar: Estados Unidos
+						<li>AG1 1∫ Lugar: Brasil
+						<li>AG1 2∫ Lugar: Sud·n
+						<li>AG1 3∫ Lugar: China
+						<li>AG2 1∫ Lugar: Estados Unidos
+						<li>ECOSOC 1∫ Lugar: Estados Unidos
+					</ul>
+				</div>
+				
+				<div class="span3 hero-unit-2" style="margin-top:10px;padding-top:30px;padding-bottom:450px;">
+					
+					
+					
+					<!--<fb:activity style="margin-bottom:20px;" site="http://www.facebook.com/DjMartinGoffan" app_id="118280394918580" width="250" height="300"></fb:activity>
+					<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script><script>new TWTR.Widget({version: 2,type: 'profile',rpp: 4,interval: 30000,width: 250,height: 300,theme: {shell: {background: '#333333',color: '#ffffff'},tweets: {background: '#ffffff',color: '#ff0000',links: '#5065A7'}},features: {scrollbar: true,loop: false,live: true,behavior: 'all'}}).render().setUser('mgoffan').start();</script>
+					
+					<script>$(document).ready(function(){$('.twtr-tweet-text *').css('font-size', '14px');});</script>-->
+				
+				</div>
+			
+			</div> <!-- END ROW -->
+			
+		</div>
+		
+		<footer>
+		
+			<div class="container">
+				
+				<div class="row">
+					<div class="span3">
+						<h1>Paises</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Noticias</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Fotos</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Videos</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+				</div>
+				
+				<h2>Hecho por Martin Goffan &copy 2012</h2>
+				
+				<a class="fbView"></a>
+				
+			</div>
+		
+		</footer>
+		
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>  <!-- jquery -->
+	<script type="text/javascript" src="/scripts/bootstrap-2.1.1/bootstrap.min.js"></script> <!-- boostrstrap -->
+    <script type="text/javascript" src="/scripts/facebook.js"></script>
+    
+  </body>
+</html>
+

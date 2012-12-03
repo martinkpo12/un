@@ -1,0 +1,20 @@
+{
+  "name": "ortmun",
+  "version": "0.1.1-2",
+  "description": "Node.js Simple Project",
+  "dependencies": {
+    "async": "0.1.18",
+    "ejs": "0.4.3",
+    "express": "2.4.6",
+    "faceplate": "0.0.4",
+    "validator": "0.4.x",
+    "mongoose": "3.3.x"
+  },
+  "engines": {
+    "node": "0.6.x"
+  },
+  "subdomain": "enamun",
+  "scripts": {
+    "start": "web.js"
+  }
+}

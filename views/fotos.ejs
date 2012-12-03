@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# iortmun: http://ogp.me/ns/fb/iortmun#">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+
+    <title><%= app.name %></title>
+    
+    <link href="/stylesheets/bootstrap-2.1.1/bootstrap.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/bootstrap-responsive.min.css" rel="stylesheet"/>
+	<link href="/stylesheets/bootstrap-2.1.1/docs.css" rel="stylesheet"/>
+	<link href="/stylesheets/main.css" rel="stylesheet"/>
+    
+    <!--[if IE]>
+      <script type="text/javascript">
+        var tags = ['header', 'section'];
+        while(tags.length)
+          document.createElement(tags.pop());
+      </script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body>
+    <div id="fb-root"></div>
+    <script type="text/javascript">
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '<%= app.id %>', // App ID
+          channelUrl : '<%= url_no_scheme('/channel.html') %>', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true // parse XFBML
+        });
+
+        // Listen to the auth.login which will be called when the user logs in
+        // using the Login button
+        FB.Event.subscribe('auth.login', function(response) {
+          // We want to reload the page now so PHP can read the cookie that the
+          // Javascript SDK sat. But we don't want to use
+          // window.location.reload() because if this is in a canvas there was a
+          // post made to this page and a reload will trigger a message to the
+          // user asking if they want to send data again.
+          // window.location = window.location;
+          window.location.reload(true);
+        });
+
+        FB.Canvas.setAutoGrow();
+      };
+
+      // Load the SDK Asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    
+    <!-- =======================================================================================================  -->
+    
+    
+    
+    	<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="/"><img src="/images/logo4.png" alt="ENAMUN" id="logo"/></a>
+					<div class="nav-collapse">
+						<ul class="nav pull-right">
+							<li><a>
+							<% if (user) { %>
+								Hola <%= user.name %>!
+								</a></li><li><a><div class="fb-logout-button"></div></a>
+							<% } else { %>
+								<div class="fb-login-button" data-scope="email, publish_actions"></div>
+							<% } %></a></li>
+							<li><a href="/paises">Paises</a></li>
+							<li><a href="/noticias">Noticias</a></li>
+							<li class="active"><a href="/fotos">Fotos</a></li>
+							<li><a href="/videos">Videos</a></li>
+							<li><a href="/modelos">Modelos</a></li>
+							<% if (user) { %>
+								<li><a href="#logout" id="logout">Logout</a></li>
+							<% } %>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div>
+		
+		<header class="jumbotron masthead fotos">
+			<div class="container">
+				<h1>Fotos</h1>
+				<p class="lead">Algunas fotos</p>
+			</div>
+		</header>
+		
+		<div class="container">
+			<div class="row" style="background-color:#fff;">
+				<div class="span1"></div>				
+				<div class="span10">
+					<% ref = req.url.split('/');%>
+					
+					<ul class="breadcrumb">
+						<li><a href="/">Inicio</a> <span class="divider">/</span></li>
+						<li class="active"><%= ref[1].charAt(0).toUpperCase()+ref[1].substr(1)%></li>
+					</ul>
+					<a href="/fotos/nueva" class="btn btn-info" style="margin-top:30px;">Nueva</a>
+					<center>
+					
+					<% fotos.forEach( function (foto) { %>
+					
+						<div class="span3">
+							
+							<a href="/foto/<%= foto.id %>">
+								<h3><%= foto.titulo %></h3>
+							</a>
+							<img src="<%= foto.url %>">
+							<p style="max-height:140px;overflow:hidden;"><%= foto.descripcion %>
+							
+						</div>
+					
+					<% }); %>
+					
+					</center>
+				</div>
+				<div class="span1"></div>
+			</div> <!-- END ROW -->
+		</div>
+		
+		<footer>
+		
+			<div class="container">
+				
+				<div class="row">
+					<div class="span3">
+						<h1>Paises</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Noticias</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Fotos</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+					<div class="span3">
+						<h1>Videos</h1>
+						<ul>
+							<li><a>Listado</a></li>
+						</ul>
+					</div>
+				</div>
+				
+				<h2>Hecho por Martin Goffan &copy 2012</h2>
+				
+				<a class="fbView"></a>
+				
+			</div>
+		
+		</footer>
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>  <!-- jquery -->
+	<script type="text/javascript" src="/scripts/bootstrap-2.1.1/bootstrap.min.js"></script> <!-- boostrstrap -->
+    <script type="text/javascript" src="/scripts/facebook.js"></script>
+	
+	<script type="text/javascript">
+		$(function () {
+			$('#myCarousel2').carousel({ interval: 2700 })
+		});
+	</script>
+	
+  </body>
+</html>
+
