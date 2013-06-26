@@ -78,20 +78,12 @@
 					<a class="brand" href="/"><img src="/images/logo4.png" alt="ENAMUN" id="logo"/></a>
 					<div class="nav-collapse">
 						<ul class="nav pull-right">
-							<li><a>
-							<% if (user) { %>
-								Hola <%= user.name %>!
-								</a></li><li><a><div class="fb-logout-button"></div></a>
-							<% } else { %>
-								<div class="fb-login-button" data-scope="email, publish_actions"></div>
-							<% } %></a></li>
+							
 							<li><a href="/paises">Paises</a></li>
 							<li><a href="/noticias">Noticias</a></li>
 							<li class="active"><a href="/fotos">Fotos</a></li>
 							<li><a href="/videos">Videos</a></li>
-							<% if (user) { %>
-								<li><a href="#logout" id="logout">Logout</a></li>
-							<% } %>
+							
 						</ul>
 					</div><!--/.nav-collapse -->
 				</div>

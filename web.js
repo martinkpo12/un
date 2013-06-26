@@ -9,7 +9,7 @@ var Validator = require('validator').Validator;
 /* var db = new sqlite3.Database('database.db'); */
 
 var mongoose = require('mongoose');
-var db = mongoose.createConnection("mongodb://nodejitsu:06912e97889ddc25d1686a7edb4ef43e@alex.mongohq.com:10090/nodejitsudb51011199575");
+var db = mongoose.createConnection("mongodb://martin:root@dharma.mongohq.com:10038/enamun");
 
 var paisSchema = mongoose.Schema({
 	nombre: String,
@@ -140,7 +140,7 @@ function pretty_URL(id, type, req) {
 }
 
 function render_page(req, res) {
-	
+	console.log('hola');
 	Noticia.find({}).sort( { subido : -1 } ).limit(3).exec( function (err, noticias) {
 		Pais.find({}, function (err, paises_) {
 			
@@ -160,53 +160,18 @@ function render_page(req, res) {
 			
 			Video.find({}).sort( { subido : -1 } ).limit(3).exec( function (err, videos) {
 				Foto.find({}).sort( { subido : -1 } ).limit(3).exec( function (err, fotos) {
-					req.facebook.app(function(app) {
-						req.facebook.me(function(user) {
-							res.render('index.ejs', {
-								layout:    	false,
-								req:       	req,
-								app:       	app,
-								user:      	user,
-								countries:	paises,
-								videos:		videos,
-								fotos:		fotos,
-								articulos:	noticias
-							});
-						});
+					res.render('index.ejs', {
+						layout:    	false,
+						req:       	req,
+						countries:	paises,
+						videos:		videos,
+						fotos:		fotos,
+						articulos:	noticias
 					});
 				});
 			});
 		});
 	});
-	
-	/*db.serialize( function () {
-		db.all("SELECT * FROM paises ORDER BY RANDOM() LIMIT 3",
-			function(err, countries) {
-				db.all("SELECT * FROM videos ORDER BY RANDOM() LIMIT 3",
-					function(err, videos) {
-						db.all("SELECT * FROM fotos ORDER BY RANDOM() LIMIT 3",
-							function(err, fotos) {
-								db.all("SELECT * FROM articulos ORDER BY date LIMIT 3",
-									function(err, articulos) {
-										req.facebook.app(function(app) {
-											req.facebook.me(function(user) {
-												res.render('index.ejs', {
-													layout:    	false,
-													req:       	req,
-													app:       	app,
-													user:      	user,
-													countries:	countries,
-													videos:		videos,
-													fotos:		fotos,
-													articulos:	articulos
-												});
-											});
-										});
-								});
-						});
-				});
-		});
-	});*/
 }
 
 function handle_facebook_request(req, res) {
@@ -275,16 +240,16 @@ app.get('/paises', function (req,res) {
 		console.log(err);
 		console.log(paises);
 		if (!err) {
-			req.facebook.app(function(app) {
-				req.facebook.me(function(user) {
+/* 			req.facebook.app(function(app) { */
+/* 				req.facebook.me(function(user) { */
 						res.render('paises.ejs', {
 						layout:    false,
 						req:       req,
 						app:       app,
-						user:      user,
+/* 						user:      user, */
 						countries: paises
-					});
-				});
+/* 					}); */
+/* 				}); */
 			});
 		}
 		else {
@@ -312,16 +277,16 @@ app.get('/paises', function (req,res) {
 });
 
 app.get('/paises/nuevo', function (req, res) {
-	req.facebook.app(function(app) {
-		req.facebook.me(function(user) {
+/* 	req.facebook.app(function(app) { */
+/* /		req.facebook.me(function(user) { */
 			res.render('pais.new.ejs', {
 				layout:    false,
 				req:       req,
 				app:       app,
-				user:      user
+/* 				user:      user */
 			});
-		});
-	});
+/* 		}); */
+/* 	}); */
 });
 
 // Redirect
@@ -332,17 +297,17 @@ app.get('/pais', function(req,res){
 app.get('/pais/:id', function (req,res,next) {
 
 	Pais.findOne( { nombre: req.params.id }, function (err, pais) {
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('pais.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					country:   pais
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 
 	/*
@@ -374,17 +339,17 @@ db.serialize(function() {
 app.get('/pais/:id/edit', function (req, res, next) {
 	
 	Pais.findOne({ nombre: req.params.id }, function (err, pais) {
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('pais.edit.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					country:   pais
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 
 	/*db.serialize(function() {
@@ -415,16 +380,16 @@ app.get('/pais/:id/edit', function (req, res, next) {
 
 app.get('/noticias/nueva', function (req, res) {
 	//console.log(req);
-	req.facebook.app(function(app) {
-		req.facebook.me(function(user) {
+/* 	req.facebook.app(function(app) { */
+/* 		req.facebook.me(function(user) { */
 			res.render('noticia.new.ejs', {
 				layout:    false,
 				req:       req,
 				app:       app,
-				user:      user
+/* 				user:      user */
 			});
-		});
-	});
+/* 		}); */
+/* 	}); */
 });
 
 app.get('/noticias/:page', function (req,res) {
@@ -439,18 +404,18 @@ app.get('/noticias/:page', function (req,res) {
 		}
 	});
 	query.sort({subido: -1}).skip((req.params.page-1)*news_per_page).limit(news_per_page).exec( function (err, noticias) {
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('noticias.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					articulos: noticias,
 					count:	   Math.ceil(news_count / news_per_page)
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 	/*Noticia.find(function (err, noticias) {
 		req.facebook.app(function(app) {
@@ -497,18 +462,18 @@ app.get('/noticia/:id', function (req,res) {
 	
 	Noticia.findById(req.params.id, function (err, noticia) {
 		if (err) res.send(pretty_JSON(err));
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				console.log(noticia);
 				res.render('noticia.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					noticia:   noticia
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 	
 	/*
@@ -536,17 +501,17 @@ db.serialize(function() {
 app.get('/noticia/:id/edit', function (req, res, next) {
 
 	Noticia.findById(req.params.id, function (err, noticia) {
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('noticia.edit.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					articulo:  noticia
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	})
 	/*db.serialize(function() {
 		db.get('SELECT * FROM articulos WHERE id="' + req.params.id + '" OR titulo="' + req.params.id + '"',
@@ -579,17 +544,17 @@ app.get('/videos', function (req,res) {
 	Video.find({}, function (err, videos) {
 		if (err) console.log(err);
 		else {
-			req.facebook.app(function(app) {
-				req.facebook.me(function(user) {
+/* 			req.facebook.app(function(app) { */
+/* 				req.facebook.me(function(user) { */
 					res.render('videos.ejs', {
 						layout:    false,
 						req:       req,
 						app:       app,
-						user:      user,
+/* 						user:      user, */
 						videos:	   videos
 					});
-				});
-			});
+/* 				}); */
+/* 			}); */
 		}
 	});
 	
@@ -611,16 +576,16 @@ app.get('/videos', function (req,res) {
 });
 
 app.get('/videos/nuevo', function (req, res) {
-	req.facebook.app(function(app) {
-		req.facebook.me(function(user) {
+/* 	req.facebook.app(function(app) { */
+/* 		req.facebook.me(function(user) { */
 			res.render('video.new.ejs', {
 				layout:    false,
 				req:       req,
 				app:       app,
-				user:      user
+/* 				user:      user */
 			});
-		});
-	});
+/* 		}); */
+/* 	}); */
 });
 
 // Redirect
@@ -635,17 +600,17 @@ app.get('/video/:id', function (req,res) {
 	
 	Video.findById(req.params.id, function (err, video) {
 		console.log(video);
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('video.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					video:	   video
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 	
 	/*db.serialize(function() {
@@ -671,17 +636,17 @@ app.get('/video/:id', function (req,res) {
 app.get('/video/:id/edit', function (req, res, next) {
 	
 	Video.findById(req.params.id, function (err, video) {
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('video.edit.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					video:	   video
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 	
 	/*db.serialize(function() {
@@ -714,17 +679,17 @@ app.get('/fotos', function (req,res) {
 	
 	Foto.find({}, function (err, fotos) {
 		if (err) throw err;
-		req.facebook.app(function(app) {
-			req.facebook.me(function(user) {
+/* 		req.facebook.app(function(app) { */
+/* 			req.facebook.me(function(user) { */
 				res.render('fotos.ejs', {
 					layout:    false,
 					req:       req,
 					app:       app,
-					user:      user,
+/* 					user:      user, */
 					fotos:	   fotos
 				});
-			});
-		});
+/* 			}); */
+/* 		}); */
 	});
 	
 	/*
@@ -770,17 +735,17 @@ app.get('/foto/:id', function (req,res) {
 		if (err) res.send(err);
 		else {
 			console.log(foto);
-			req.facebook.app(function(app) {
-				req.facebook.me(function(user) {
+/* 			req.facebook.app(function(app) { */
+/* 				req.facebook.me(function(user) { */
 					res.render('foto.ejs', {
 						layout:    false,
 						req:       req,
 						app:       app,
-						user:      user,
+/* 						user:      user, */
 						foto:	   foto
 					});
-				});
-			});
+/* 				}); */
+/* 			}); */
 		}
 	});
 	
@@ -810,17 +775,17 @@ app.get('/foto/:id/edit', function (req, res, next) {
 		if (err) res.send(err);
 		else {
 			console.log(foto);
-			req.facebook.app(function(app) {
-				req.facebook.me(function(user) {
+/* 			req.facebook.app(function(app) { */
+/* 				req.facebook.me(function(user) { */
 					res.render('foto.edit.ejs', {
 						layout:    false,
 						req:       req,
 						app:       app,
-						user:      user,
+/* 						user:      user, */
 						foto:	   foto
 					});
-				});
-			});
+/* 				}); */
+/* 			}); */
 		}
 	});
 
@@ -892,16 +857,16 @@ app.get('/game', function(req, res) {
 
 app.get('/modelos', function(req, res) {
 	
-	req.facebook.app(function(app) {
-		req.facebook.me(function(user) {
+/* 	req.facebook.app(function(app) { */
+/* 		req.facebook.me(function(user) { */
 			res.render('modelos.ejs', {
 				layout:    false,
 				req:       req,
 				app:       app,
 				user:      user,
 			});
-		});
-	});
+/* 		}); */
+/* 	}); */
 });
 
 /*

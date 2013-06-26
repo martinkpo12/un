@@ -87,21 +87,13 @@
 					<a class="brand" href="/"><img src="/images/logo4.png" alt="ENAMUN" id="logo"/></a>
 					<div class="nav-collapse">
 						<ul class="nav pull-right">
-							<li><a>
-							<% if (user) { %>
-								Hola <%= user.name %>!
-								</a></li><li><a><div class="fb-logout-button"></div></a>
-							<% } else { %>
-								<div class="fb-login-button" data-scope="email, publish_actions"></div>
-							<% } %></a></li>
+							
 							<li><a href="/paises">Paises</a></li>
 							<li class="active"><a href="/noticias">Noticias</a></li>
 							<li><a href="/fotos">Fotos</a></li>
 							<li><a href="/videos">Videos</a></li>
 							<li><a href="/modelos">Modelos</a></li>
-							<% if (user) { %>
-								<li><a href="#logout" id="logout">Logout</a></li>
-							<% } %>
+							
 						</ul>
 					</div>
 				</div>
@@ -135,9 +127,7 @@
 					<img width="100%" src="<%= (noticia.imagen == null) ? "" : noticia.imagen %>">
 					<h3><%= noticia.subtitulo%></h3>
 					<p id='video-description'><%= noticia.contenido %></p>
-					<% if (user) { %>
-						<strong>Like this video? <a class="fbFav">Favourite it!</a> or just <a class="fbLike">Like it!</a></strong>
-					<% } %>
+					
 					
 					<div class="btn-group">
 						<a class="btn dropdown-toggle btn-info" data-toggle="dropdown" href="#">
@@ -180,9 +170,7 @@
 							<tr>
 								<td>
 									<form id="comments">
-										<% if (user) { %>
-											<input type="hidden" name="por" value="<%= user.name%>">
-										<% }%>
+										
 										<textarea name="contenido" style="width:80%;" rows="3"></textarea>
 										<button class="btn btn-info" id="send">Enviar</button>
 									</form>
@@ -303,7 +291,7 @@
 					success: function (data) {
 						var text = $("[name='contenido']").val();
 						$("[name='contenido']").val("");
-						$('tbody > tr, tbody > blockquote').eq($('tbody > tr, tbody > blockquote').length - 2).after("<blockquote><strong>Recien</strong><p>" + text + "</p><small>	<% if (user) { %><%= user.name %><% } else { %>Anonimo<% } %></small><hr style='border-width:3px;' /></blockquote>");
+						$('tbody > tr, tbody > blockquote').eq($('tbody > tr, tbody > blockquote').length - 2).after("<blockquote><strong>Recien</strong><p>" + text + "</p><small>Anonimo></small><hr style='border-width:3px;' /></blockquote>");
 					}
 				});
 			});
