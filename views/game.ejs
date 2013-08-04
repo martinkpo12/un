@@ -2,15 +2,20 @@
 <html>
 <head>
 <title>The Game</title>
-<style>html,body{margin:0;padding:0;}</style>
+<style>html,body{margin:0;padding:0;background-color: #22BAEC}#container{margin: 50px auto;width: 800px;position:relative}</style>
 </head>
 <body>
+<div id="container">
 <canvas id="myCanvas" width="800" height="600">Canvas no disponible</canvas>
+</div>
 <audio id="bgSound" src="/sounds/bg.wav" autoplay loop></audio>
 <a href="/">Ir Atras</a>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
 
 // ctx.drawImage(image, sx, sy, sWide, sHi, dx, dy, dWide, dHigh)
+
+$(function() {
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -464,8 +469,10 @@ Button.prototype.unpress = function () {
 
 // Mouse Clicked Event
 function mouseClicked (e) {
-    mouseX = e.pageX;
-    mouseY = e.pageY;
+	
+
+    mouseX = e.pageX - c.offsetParent.offsetLeft;
+    mouseY = e.pageY - c.offsetParent.offsetTop;
     
     if (status == STATE.LEVELS) {
 		pLevel = level;
@@ -730,7 +737,7 @@ function init() {
     document.addEventListener('click', mouseClicked, false);
 	setInterval(loop, 60);
 }
-
+});
 </script>
 </body>
 </html>
