@@ -862,8 +862,8 @@ app.get('/modelos', function(req, res) {
 			res.render('modelos.ejs', {
 				layout:    false,
 				req:       req,
-				app:       app,
-				user:      user,
+/* 				app:       app, */
+/* 				user:      user, */
 			});
 /* 		}); */
 /* 	}); */
